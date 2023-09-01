@@ -20,12 +20,18 @@
 struct RaytraceRequestContext
 {
 	// Input
+	Vec3f* sensorLinearVelocity;
+	Vec3f* sensorAngularVelocity;
+
 	const Mat3x4f* rays;
 	size_t rayCount;
 
 	Mat3x4f rayOriginToWorld;
 	const Vec2f* rayRanges;
 	size_t rayRangesCount;
+
+	const float* rayTimeOffsets;
+	size_t rayTimeOffsetsCount;
 
 	const int* ringIds;
 	size_t ringIdsCount;

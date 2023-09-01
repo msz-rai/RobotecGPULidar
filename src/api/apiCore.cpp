@@ -760,7 +760,7 @@ void TapePlayer::tape_node_points_transform(const YAML::Node& yamlNode)
 }
 
 RGL_API rgl_status_t
-rgl_node_raytrace(rgl_node_t* node, rgl_scene_t scene)
+rgl_node_raytrace(rgl_node_t* node, rgl_scene_t scene, const rgl_vec3f* linear_velocity, const rgl_vec3f* angular_velocity)
 {
 	auto status = rglSafeCall([&]() {
 		RGL_API_LOG("rgl_node_raytrace(node={}, scene={})", repr(node), (void*) scene);
@@ -770,9 +770,11 @@ rgl_node_raytrace(rgl_node_t* node, rgl_scene_t scene)
 			scene = Scene::defaultInstance().get();
 		}
 
-		createOrUpdateNode<RaytraceNode>(node, Scene::validatePtr(scene));
+		createOrUpdateNode<RaytraceNode>(node, Scene::validatePtr(scene),
+		                                 reinterpret_cast<const Vec3f*>(linear_velocity),
+		                                 reinterpret_cast<const Vec3f*>(angular_velocity));
 	});
-	TAPE_HOOK(node, scene);
+	TAPE_HOOK(node, scene, linear_velocity, angular_velocity);
 	return status;
 }
 
@@ -781,7 +783,10 @@ void TapePlayer::tape_node_raytrace(const YAML::Node& yamlNode)
 	auto nodeId = yamlNode[0].as<TapeAPIObjectID>();
 	rgl_node_t node = tapeNodes.contains(nodeId) ? tapeNodes.at(nodeId) : nullptr;
 	rgl_node_raytrace(&node,
-		nullptr);  // TODO(msz-rai) support multiple scenes
+		nullptr,  // TODO(msz-rai) support multiple scenes
+		reinterpret_cast<const rgl_vec3f*>(fileMmap + yamlNode[2].as<size_t>()),
+		reinterpret_cast<const rgl_vec3f*>(fileMmap + yamlNode[3].as<size_t>())
+		);
 	tapeNodes.insert({nodeId, node});
 }
 

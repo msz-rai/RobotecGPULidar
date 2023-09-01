@@ -109,7 +109,7 @@ private:
 struct RaytraceNode : Node, IPointsNode
 {
 	using Ptr = std::shared_ptr<RaytraceNode>;
-	void setParameters(std::shared_ptr<Scene> scene);
+	void setParameters(std::shared_ptr<Scene> scene, const Vec3f* linearVelocity, const Vec3f* angularVelocity);
 
 	// Node
 	void validate() override;
@@ -133,6 +133,9 @@ private:
 	VArrayProxy<Vec2f>::Ptr defaultRange = VArrayProxy<Vec2f>::create(1);
 	VArrayProxy<RaytraceRequestContext>::Ptr requestCtx = VArrayProxy<RaytraceRequestContext>::create(1);
 	std::unordered_map<rgl_field_t, VArray::Ptr> fieldData;
+
+	VArrayProxy<Vec3f>::Ptr sensorLinearVelocity = VArrayProxy<Vec3f>::create(1);
+	VArrayProxy<Vec3f>::Ptr sensorAngularVelocity = VArrayProxy<Vec3f>::create(1);
 
 	template<rgl_field_t>
 	auto getPtrTo();

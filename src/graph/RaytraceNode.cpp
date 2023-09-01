@@ -20,11 +20,15 @@
 #include <macros/optix.hpp>
 #include <RGLFields.hpp>
 
-void RaytraceNode::setParameters(std::shared_ptr<Scene> scene)
+void RaytraceNode::setParameters(std::shared_ptr<Scene> scene, const Vec3f* linearVelocity, const Vec3f* angularVelocity)
 {
 	this->scene = scene;
 	const static Vec2f defaultRangeValue = Vec2f(0.0f, FLT_MAX);
 	defaultRange->setData(&defaultRangeValue, 1);
+
+	const static Vec3f zeroVelocityValue = Vec3f();
+	linearVelocity == nullptr ? sensorLinearVelocity->resize(0) : sensorLinearVelocity->setData(linearVelocity, 1);
+	angularVelocity == nullptr ? sensorAngularVelocity->resize(0) : sensorAngularVelocity->setData(angularVelocity, 1);
 }
 
 void RaytraceNode::validate()
@@ -64,12 +68,17 @@ void RaytraceNode::schedule(cudaStream_t stream)
 	// Optional
 	auto rayRanges = raysNode->getRanges();
 	auto ringIds = raysNode->getRingIds();
+	auto rayTimeOffsets = raysNode->getTimeOffsets();
 
 	(*requestCtx)[0] = RaytraceRequestContext{
+		.sensorLinearVelocity = sensorLinearVelocity->getCount() == 0 ? nullptr : sensorLinearVelocity->getDevicePtr(),
+		.sensorAngularVelocity = sensorAngularVelocity->getCount() == 0 ? nullptr : sensorAngularVelocity->getDevicePtr(),
 		.rays = rays->getDevicePtr(),
 		.rayCount = rays->getCount(),
 		.rayRanges = rayRanges.has_value() ? (*rayRanges)->getDevicePtr() : defaultRange->getDevicePtr(),
 		.rayRangesCount = rayRanges.has_value() ? (*rayRanges)->getCount() : defaultRange->getCount(),
+		.rayTimeOffsets = rayTimeOffsets.has_value() ? (*rayTimeOffsets)->getDevicePtr() : nullptr,
+		.rayTimeOffsetsCount = rayTimeOffsets.has_value() ? (*rayTimeOffsets)->getCount() : 0,
 		.ringIds = ringIds.has_value() ? (*ringIds)->getDevicePtr() : nullptr,
 		.ringIdsCount = ringIds.has_value() ? (*ringIds)->getCount() : 0,
 		.scene = sceneAS,

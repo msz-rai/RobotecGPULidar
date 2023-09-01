@@ -544,14 +544,21 @@ rgl_node_points_transform(rgl_node_t* node, const rgl_mat3x4f* transform);
 /**
  * Creates or modifies RaytraceNode.
  * The node performs GPU-accelerated raytracing on the given scene.
- * Fields to be computed will be automatically determined based on connected FormatNodes and YieldPointsNodes
+ * Fields to be computed will be automatically determined based on connected FormatNodes and YieldPointsNodes.
+ * It applies velocity distortion if velocities are passed and time offsets are set to the rays.
+ * The velocities passed to that node must match the coordinate frame in which rays are described/transformed.
  * Graph input: rays
  * Graph output: point cloud (sparse)
  * @param node If (*node) == nullptr, a new node will be created. Otherwise, (*node) will be modified.
  * @param scene Handle to a scene to perform raytracing on. Pass null to use the default scene
+ * @param linear_velocity Pointer to a single 3D vector describing the linear velocity of the sensor.
+ *                        The velocity is in meters per second. Pass null to not distort.
+ * @param angular_velocity Pointer to a single 3D vector describing the delta angular velocity of the sensor in euler angles (roll, pitch, yaw).
+ *                         The velocity is in radians per second. Pass null to not distort.
+ *
  */
 RGL_API rgl_status_t
-rgl_node_raytrace(rgl_node_t* node, rgl_scene_t scene);
+rgl_node_raytrace(rgl_node_t* node, rgl_scene_t scene, const rgl_vec3f* linear_velocity, const rgl_vec3f* angular_velocity);
 
 /**
  * Creates or modifies FormatPointsNode.
