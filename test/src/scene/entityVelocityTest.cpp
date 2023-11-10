@@ -21,7 +21,7 @@ using namespace std::chrono_literals;
 #include "helpers/sceneHelpers.hpp"
 TEST(EntityVelocity, Interactive)
 {
-	GTEST_SKIP(); // Comment to run the test
+	//	GTEST_SKIP(); // Comment to run the test
 	rgl_node_t rays = nullptr, raytrace = nullptr, compact = nullptr, format = nullptr, publish = nullptr;
 	std::vector<rgl_mat3x4f> raysTf = makeLidar3dRays(360.0f, 180.0f);
 
@@ -65,27 +65,27 @@ TEST(EntityVelocity, Interactive)
 	// Setup scene
 	constexpr float CUBE_DIST = 5.0f;
 
-	// +X, moves +/- 1 from initial position
-	DynamicCube translatingCube(Mat3x4f::translation({CUBE_DIST, 0, 0}), [](DynamicCube& cube, double t) {
-		auto change = Mat3x4f::translation(Vec3f{std::sin(t), 0, 0});
-		auto newPose = (cube.startPose * change).toRGL();
-		EXPECT_RGL_SUCCESS(rgl_entity_set_pose(cube.entity, &newPose));
-	});
-
-	// -X, rotates around Z, ccw
-	DynamicCube rotatingCube(Mat3x4f::translation(-CUBE_DIST, 0, 0), [](DynamicCube& cube, double t) {
-		auto change = Mat3x4f::rotationRad(0, 0, t);
-		auto newPose = (cube.startPose * change).toRGL();
-		EXPECT_RGL_SUCCESS(rgl_entity_set_pose(cube.entity, &newPose));
-	});
-
-	// +Y, scales between 0.5 and 1.5
-	DynamicCube scalingCube(Mat3x4f::translation(0, CUBE_DIST, 0), [](DynamicCube& cube, double t) {
-		auto ds = 1.0f + sin(t) / 2.0f;
-		auto change = Mat3x4f::scale(ds, ds, ds);
-		auto newPose = (cube.startPose * change).toRGL();
-		EXPECT_RGL_SUCCESS(rgl_entity_set_pose(cube.entity, &newPose));
-	});
+	//	// +X, moves +/- 1 from initial position
+	//	DynamicCube translatingCube(Mat3x4f::translation({CUBE_DIST, 0, 0}), [](DynamicCube& cube, double t) {
+	//		auto change = Mat3x4f::translation(Vec3f{std::sin(t), 0, 0});
+	//		auto newPose = (cube.startPose * change).toRGL();
+	//		EXPECT_RGL_SUCCESS(rgl_entity_set_pose(cube.entity, &newPose));
+	//	});
+	//
+	//	// -X, rotates around Z, ccw
+	//	DynamicCube rotatingCube(Mat3x4f::translation(-CUBE_DIST, 0, 0), [](DynamicCube& cube, double t) {
+	//		auto change = Mat3x4f::rotationRad(0, 0, t);
+	//		auto newPose = (cube.startPose * change).toRGL();
+	//		EXPECT_RGL_SUCCESS(rgl_entity_set_pose(cube.entity, &newPose));
+	//	});
+	//
+	//	// +Y, scales between 0.5 and 1.5
+	//	DynamicCube scalingCube(Mat3x4f::translation(0, CUBE_DIST, 0), [](DynamicCube& cube, double t) {
+	//		auto ds = 1.0f + sin(t) / 2.0f;
+	//		auto change = Mat3x4f::scale(ds, ds, ds);
+	//		auto newPose = (cube.startPose * change).toRGL();
+	//		EXPECT_RGL_SUCCESS(rgl_entity_set_pose(cube.entity, &newPose));
+	//	});
 
 	// -Y, oscillates between cube and pyramid by collapsing frontal face into cube's center point
 	DynamicCube morphingCube(Mat3x4f::translation(0, -CUBE_DIST, 0), [](DynamicCube& cube, double t) {
@@ -117,9 +117,9 @@ TEST(EntityVelocity, Interactive)
 		auto currentTimeSeconds = static_cast<double>(currentTime) / 1E9;
 		EXPECT_RGL_SUCCESS(rgl_scene_set_time(nullptr, currentTime));
 
-		translatingCube.update(currentTimeSeconds);
-		rotatingCube.update(currentTimeSeconds);
-		scalingCube.update(currentTimeSeconds);
+		//		translatingCube.update(currentTimeSeconds);
+		//		rotatingCube.update(currentTimeSeconds);
+		//		scalingCube.update(currentTimeSeconds);
 		morphingCube.update(currentTimeSeconds);
 
 		EXPECT_RGL_SUCCESS(rgl_graph_run(raytrace));
