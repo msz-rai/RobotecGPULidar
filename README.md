@@ -72,9 +72,7 @@ An introduction to the RGL API along with an example can be found [here](docs/Us
 3. `export OptiX_INSTALL_DIR=<Path to OptiX>`
 4. `docker build . --tag rgl:latest`
 5. `docker run --net=host --gpus all -v $(pwd):/code -v ${OptiX_INSTALL_DIR}:/optix -e OptiX_INSTALL_DIR=/optix -e NVIDIA_DRIVER_CAPABILITIES=all -it rgl:latest /bin/bash`
-6. `./setup.py --clean-build --with-pcl`
-
-*Note: Currently dockerfile doesn't contain ROS2 installation to support ROS2 extension.*
+6. `./setup.py --clean-build --with-pcl --with-ros2`
 
 ## Building on Ubuntu 22
 
