@@ -1,0 +1,15 @@
+name: test
+
+run-name: ${{ github.actor }} is a test flow
+
+on: [push]
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  create-file:
+    runs-on: self-hosted
+    steps:
+      - run: touch test.txt
