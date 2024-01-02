@@ -11,8 +11,24 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
 
-  build-rgl:
+  build-rgl-host:
     needs: checkout-repository
     runs-on: self-hosted
     steps:
-      - run: ./setup.py
+      - run: ./setup.py --build-dir build-host
+
+  build-rgl-docker:
+    needs: build-rgl-host
+    runs-on: self-hosted
+    container:
+      image: rgl:latest
+      env:
+        NVIDIA_DRIVER_CAPABILITIES: all
+      volumes:
+        - $PWD:/code
+      options:
+        --rm
+        --name rgl
+        --gpus all
+    steps:
+      - run: ./setup.py --build-dir build-docker
