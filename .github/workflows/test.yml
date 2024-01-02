@@ -4,17 +4,15 @@ run-name: ${{ github.actor }} is a test flow
 
 on: [push]
 
-defaults:
-  run:
-    shell: bash
-
 jobs:
-  create-file:
+  checkout-repository:
     runs-on: self-hosted
     steps:
-      - run: touch test.txt
+      - name: Check out repository code
+        uses: actions/checkout@v3
 
   build-rgl:
+    needs: checkout-repository
     runs-on: self-hosted
     steps:
-      - run: echo $PWD
+      - run: ./setup.py
