@@ -20,6 +20,11 @@ jobs:
   build-rgl-docker:
     needs: checkout-repository
     runs-on: self-hosted
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
     container:
       image: localhost:5000/rgl:latest
       env:
