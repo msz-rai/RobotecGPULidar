@@ -23,7 +23,7 @@ jobs:
       optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
 
   build-pcl:
-    needs: checkout-repository
+    needs: [checkout-repository, load-env]
     uses: ./.github/workflows/build-rgl.yml
     with:
       build-command: ./setup.py --with-pcl --build-dir build-pcl
