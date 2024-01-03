@@ -29,7 +29,7 @@ jobs:
         OptiX_INSTALL_DIR: /optix
         NVIDIA_DRIVER_CAPABILITIES: all
       volumes:
-        - ${{ needs.load-env.outputs.base-image }}:/optix
+        - ${{ needs.load-env.outputs.optix-install-dir }}:/optix
       options:
         --gpus all
         --user ${{ needs.load-env.outputs.user-id }}
