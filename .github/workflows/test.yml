@@ -24,11 +24,11 @@ jobs:
       image: docker://localhost:5000/rgl:latest
       env:
         NVIDIA_DRIVER_CAPABILITIES: all
-      volumes:
-        - $PWD:/code
       options:
         --rm
         --name rgl
         --gpus all
     steps:
+      - run: pwd
+      - run: ls
       - run: ./setup.py --build-dir build-docker
