@@ -6,7 +6,7 @@ on: [push]
 
 jobs:
   load-env:
-    uses: ./.github/workflows/load-env.yaml
+    uses: ./.github/workflows/load-env.yml
 
   checkout-repository:
     runs-on: self-hosted
