@@ -5,6 +5,9 @@ run-name: ${{ github.actor }} is a test flow
 on: [push]
 
 jobs:
+  load-env:
+    uses: ./.github/workflows/load-env.yaml
+
   checkout-repository:
     runs-on: self-hosted
     steps:
@@ -18,20 +21,19 @@ jobs:
 #      - run: ./setup.py --build-dir build-host
 
   build-rgl-docker:
-    needs: checkout-repository
+    needs: [checkout-repository, load-env]
     runs-on: self-hosted
     container:
       image: docker://localhost:5000/rgl:latest
       env:
         OptiX_INSTALL_DIR: /optix
         NVIDIA_DRIVER_CAPABILITIES: all
-#      volumes:
-#        - ${{ env.OptiX_INSTALL_DIR }}:/optix
+      volumes:
+        - ${{ needs.load-env.outputs.base-image }}:/optix
       options:
         --rm
         --name rgl
         --gpus all
-        --volume ${{ env.OptiX_INSTALL_DIR }}:/optix
     steps:
       - run: pwd
       - run: ls
