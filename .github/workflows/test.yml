@@ -31,6 +31,20 @@ jobs:
       self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
       optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
 
+### TEST IN RGL DOCKER ###
+  test-core:
+    needs: [build-core]
+    uses: ./.github/workflows/test-rgl.yml
+    with:
+      test-command: cd build-core/test && ./RobotecGPULidar_test
+      docker-image: localhost:5000/rgl:latest
+
+  test-pcl:
+    needs: [ build-pcl ]
+    uses: ./.github/workflows/test-rgl.yml
+    with:
+      test-command: cd build-pcl/test && ./RobotecGPULidar_test
+      docker-image: localhost:5000/rgl:latest
 
 #  build:
 #    needs: [checkout-repository, load-env]

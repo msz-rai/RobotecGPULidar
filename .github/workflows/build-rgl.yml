@@ -33,4 +33,4 @@ jobs:
       - name: fix git
         run: git config --global --add safe.directory $PWD
       - name: build
-        run: ${{ inputs.build-command}}
+        run: ${{ inputs.build-command }}
