@@ -3,7 +3,13 @@ name: build-rgl
 on:
   workflow_call:
     inputs:
-      RGL_BUILD_COMMAND:
+      build-command:
+        required: true
+        type: string
+      self-hosted-user-id:
+        required: true
+        type: string
+      optix-install-dir:
         required: true
         type: string
 
@@ -11,11 +17,7 @@ permissions:
   contents: read
 
 jobs:
-  load-env:
-    uses: ./.github/workflows/load-env.yml
-
-  build-rgl:
-    needs: load-env
+  build:
     runs-on: self-hosted
     container:
       image: docker://localhost:5000/rgl:latest
@@ -23,12 +25,12 @@ jobs:
         OptiX_INSTALL_DIR: /optix
         NVIDIA_DRIVER_CAPABILITIES: all
       volumes:
-        - ${{ needs.load-env.outputs.optix-install-dir }}:/optix
+        - ${{ inputs.optix-install-dir }}:/optix
       options:
         --gpus all
-        --user ${{ needs.load-env.outputs.user-id }}
+        --user ${{ inputs.user-id }}
     steps:
       - name: fix git
         run: git config --global --add safe.directory $PWD
       - name: build
-        run: ${{ inputs.RGL_BUILD_COMMAND}}
+        run: ${{ inputs.build-command}}

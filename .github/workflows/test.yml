@@ -8,14 +8,19 @@ jobs:
   checkout-repository:
     runs-on: self-hosted
     steps:
-      - name: Check out repository code
+      - name: Checkout repository code
         uses: actions/checkout@v3
 
+  load-env:
+    uses: ./.github/workflows/load-env.yml
+
   build-core:
-    needs: checkout-repository
+    needs: [checkout-repository, load-env]
     uses: ./.github/workflows/build-rgl.yml
     with:
-      RGL_BUILD_COMMAND: ./setup.py --build-dir build-core
+      build-command: ./setup.py --build-dir build-core
+      self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
+      optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
 
   build-pcl:
     needs: checkout-repository
