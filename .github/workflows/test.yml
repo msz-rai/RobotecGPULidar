@@ -23,7 +23,10 @@ jobs:
     container:
       image: docker://localhost:5000/rgl:latest
       env:
+        OptiX_INSTALL_DIR: /optix
         NVIDIA_DRIVER_CAPABILITIES: all
+      volumes:
+        - ${{ env.OptiX_INSTALL_DIR }}:/optix
       options:
         --rm
         --name rgl
@@ -31,4 +34,5 @@ jobs:
     steps:
       - run: pwd
       - run: ls
+      - run: echo $OptiX_INSTALL_DIR
       - run: ./setup.py --build-dir build-docker
