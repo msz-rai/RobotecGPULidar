@@ -20,7 +20,7 @@ jobs:
 #    steps:
 #      - run: ./setup.py --build-dir build-host
 
-  build-rgl-docker:
+  build-rgl-base:
     needs: [checkout-repository, load-env]
     runs-on: self-hosted
     container:
@@ -34,10 +34,26 @@ jobs:
         --gpus all
         --user ${{ needs.load-env.outputs.user-id }}
     steps:
-      - run: pwd
-      - run: ls
-      - run: echo $OptiX_INSTALL_DIR
-      - run: ls /optix
       - name: fix git
         run: git config --global --add safe.directory $PWD
-      - run: ./setup.py --build-dir build-docker
+      - name: build
+        run: ./setup.py --build-dir build-core
+
+  build-rgl-with-pcl:
+    needs: [ checkout-repository, load-env ]
+    runs-on: self-hosted
+    container:
+      image: docker://localhost:5000/rgl:latest
+      env:
+        OptiX_INSTALL_DIR: /optix
+        NVIDIA_DRIVER_CAPABILITIES: all
+      volumes:
+        - ${{ needs.load-env.outputs.optix-install-dir }}:/optix
+      options:
+        --gpus all
+        --user ${{ needs.load-env.outputs.user-id }}
+    steps:
+      - name: fix git
+        run: git config --global --add safe.directory $PWD
+      - name: build
+        run: ./setup.py --with-pcl --build-dir build-pcl
