@@ -14,19 +14,30 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
 
-  build:
-    needs: [checkout-repository, load-env]
-    runs-on: self-hosted
-    steps:
-      - name: build core
-        uses: ./.github/workflows/build-rgl.yml
-        with:
-          RGL_BUILD_COMMAND: ./setup.py --build-dir build-core
+  build-core:
+    uses: ./.github/workflows/build-rgl.yml
+    with:
+      RGL_BUILD_COMMAND: ./setup.py --build-dir build-core
 
-      - name: build pcl extension
-        uses: ./.github/workflows/build-rgl.yml
-        with:
-          RGL_BUILD_COMMAND: ./setup.py --with-pcl --build-dir build-pcl
+  build-pcl:
+    uses: ./.github/workflows/build-rgl.yml
+    with:
+      RGL_BUILD_COMMAND: ./setup.py --with-pcl --build-dir build-pcl
+
+
+#  build:
+#    needs: [checkout-repository, load-env]
+#    runs-on: self-hosted
+#    steps:
+#      - name: build core
+#        uses: ./.github/workflows/build-rgl.yml
+#        with:
+#          RGL_BUILD_COMMAND: ./setup.py --build-dir build-core
+#
+#      - name: build pcl extension
+#        uses: ./.github/workflows/build-rgl.yml
+#        with:
+#          RGL_BUILD_COMMAND: ./setup.py --with-pcl --build-dir build-pcl
 
 #  build-rgl-base:
 #    needs: [checkout-repository, load-env]

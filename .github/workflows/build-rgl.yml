@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 jobs:
-  build-rgl-base:
+  build-rgl:
     needs: [checkout-repository, load-env]
     runs-on: self-hosted
     container:
