@@ -34,7 +34,7 @@ jobs:
         --rm
         --name rgl
         --gpus all
-        --user ${{ needs.load-env.outputs.user }}
+        --user ${{ needs.load-env.outputs.user-id }}
     steps:
       - run: pwd
       - run: ls
