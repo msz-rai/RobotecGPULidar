@@ -26,7 +26,9 @@ jobs:
     needs: checkout-repository
     uses: ./.github/workflows/build-rgl.yml
     with:
-      RGL_BUILD_COMMAND: ./setup.py --with-pcl --build-dir build-pcl
+      build-command: ./setup.py --with-pcl --build-dir build-pcl
+      self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
+      optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
 
 
 #  build:
