@@ -5,14 +5,18 @@ on:
     outputs:
       optix-install-dir:
         value: ${{ jobs.load-env.outputs.optix-install-dir }}
+      user:
+        value: ${{ jobs.load-env.outputs.user }}
 
 jobs:
   load-env:
     runs-on: self-hosted
     outputs:
       optix-install-dir: ${{ steps.set-env.outputs.optix-install-dir }}
+      user: ${{ steps.set-env.outputs.user }}
     steps:
       - name: Set env
         id: set-env
         run: |
           echo "optix-install-dir=$OptiX_INSTALL_DIR" >> $GITHUB_OUTPUT
+          echo "user=$USER" >> $GITHUB_OUTPUT
