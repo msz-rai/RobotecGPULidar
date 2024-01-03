@@ -28,7 +28,7 @@ jobs:
         - ${{ inputs.optix-install-dir }}:/optix
       options:
         --gpus all
-        --user ${{ inputs.user-id }}
+        --user ${{ inputs.self-hosted-user-id }}
     steps:
       - name: fix git
         run: git config --global --add safe.directory $PWD
