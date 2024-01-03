@@ -25,12 +25,13 @@ jobs:
       env:
         OptiX_INSTALL_DIR: /optix
         NVIDIA_DRIVER_CAPABILITIES: all
-      volumes:
-        - ${{ env.OptiX_INSTALL_DIR }}:/optix
+#      volumes:
+#        - ${{ env.OptiX_INSTALL_DIR }}:/optix
       options:
         --rm
         --name rgl
         --gpus all
+        --volume ${{ env.OptiX_INSTALL_DIR }}:/optix
     steps:
       - run: pwd
       - run: ls
