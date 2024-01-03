@@ -15,7 +15,7 @@ jobs:
     uses: ./.github/workflows/load-env.yml
 
   build-rgl:
-    needs: [load-env]
+    needs: load-env
     runs-on: self-hosted
     container:
       image: docker://localhost:5000/rgl:latest

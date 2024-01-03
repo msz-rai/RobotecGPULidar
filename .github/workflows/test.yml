@@ -18,7 +18,7 @@ jobs:
       RGL_BUILD_COMMAND: ./setup.py --build-dir build-core
 
   build-pcl:
-    needs: [checkout-repository, load-env]
+    needs: checkout-repository
     uses: ./.github/workflows/build-rgl.yml
     with:
       RGL_BUILD_COMMAND: ./setup.py --with-pcl --build-dir build-pcl
