@@ -11,8 +11,11 @@ permissions:
   contents: read
 
 jobs:
+  load-env:
+    uses: ./.github/workflows/load-env.yml
+
   build-rgl:
-    needs: [checkout-repository, load-env]
+    needs: [load-env]
     runs-on: self-hosted
     container:
       image: docker://localhost:5000/rgl:latest

@@ -5,9 +5,6 @@ run-name: ${{ github.actor }} is a test flow
 on: [push]
 
 jobs:
-  load-env:
-    uses: ./.github/workflows/load-env.yml
-
   checkout-repository:
     runs-on: self-hosted
     steps:
@@ -15,7 +12,7 @@ jobs:
         uses: actions/checkout@v3
 
   build-core:
-    needs: [checkout-repository, load-env]
+    needs: checkout-repository
     uses: ./.github/workflows/build-rgl.yml
     with:
       RGL_BUILD_COMMAND: ./setup.py --build-dir build-core
