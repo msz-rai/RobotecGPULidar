@@ -15,8 +15,7 @@ jobs:
       optix-install-dir: ${{ steps.set-env.outputs.optix-install-dir }}
       user-id: ${{ steps.set-env.outputs.user-id }}
     steps:
-      - name: Set env
-        id: set-env
+      - id: set-env
         run: |
           echo "optix-install-dir=$OptiX_INSTALL_DIR" >> $GITHUB_OUTPUT
           echo "user-id=$(id -u $USER)" >> $GITHUB_OUTPUT

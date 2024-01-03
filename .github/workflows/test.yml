@@ -31,14 +31,13 @@ jobs:
       volumes:
         - ${{ needs.load-env.outputs.base-image }}:/optix
       options:
-        --rm
-        --name rgl
         --gpus all
         --user ${{ needs.load-env.outputs.user-id }}
     steps:
       - run: pwd
       - run: ls
       - run: echo $OptiX_INSTALL_DIR
+      - run: ls /optix
       - name: fix git
         run: git config --global --add safe.directory $PWD
       - run: ./setup.py --build-dir build-docker
