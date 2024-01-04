@@ -10,6 +10,8 @@ jobs:
     steps:
       - name: Checkout repository code
         uses: actions/checkout@v3
+      - name: Import private extensions
+        run: vcs import < extensions.repos
 
   load-env:
     uses: ./.github/workflows/load-env.yml
