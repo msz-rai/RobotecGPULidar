@@ -150,7 +150,7 @@ jobs:
     uses: ./.github/workflows/test-subworkflow.yml
     with:
       test-command: 'cd build-core/test && ./RobotecGPULidar_test'
-      docker-image: ${{ PRODUCTION_DOCKER_IMAGE }}
+      docker-image: ${{ env.PRODUCTION_DOCKER_IMAGE }}
 
   test-pcl-prod:
     needs: [ build-pcl ]
@@ -160,7 +160,7 @@ jobs:
       test-command: '
         apt update && apt install -y libxcursor1 libgl1 &&
         cd build-pcl/test && ./RobotecGPULidar_test'
-      docker-image: ${{ PRODUCTION_DOCKER_IMAGE }}
+      docker-image: ${{ env.PRODUCTION_DOCKER_IMAGE }}
 
   test-ros2-prod:
     needs: [ build-ros2 ]
@@ -173,21 +173,21 @@ jobs:
         cp -r ../ros2_standalone/*.so* ../ &&
         export RMW_IMPLEMENTATION=rmw_fastrtps_cpp && ./RobotecGPULidar_test &&
         export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp && ./RobotecGPULidar_test'
-      docker-image: ${{ PRODUCTION_DOCKER_IMAGE }}
+      docker-image: ${{ env.PRODUCTION_DOCKER_IMAGE }}
 
   test-udp-prod:
     needs: [ build-udp ]
     uses: ./.github/workflows/test-subworkflow.yml
     with:
       test-command: 'cd build-udp/test && ./RobotecGPULidar_test'
-      docker-image: ${{ PRODUCTION_DOCKER_IMAGE }}
+      docker-image: ${{ env.PRODUCTION_DOCKER_IMAGE }}
 
   test-snow-prod:
     needs: [ build-snow ]
     uses: ./.github/workflows/test-subworkflow.yml
     with:
       test-command: 'cd build-snow/test && ./RobotecGPULidar_test'
-      docker-image: ${{ PRODUCTION_DOCKER_IMAGE }}
+      docker-image: ${{ env.PRODUCTION_DOCKER_IMAGE }}
 
   test-all-prod:
     needs: [ build-all ]
@@ -202,4 +202,4 @@ jobs:
         cp -r ../ros2_standalone/*.so* ../ &&
         export RMW_IMPLEMENTATION=rmw_fastrtps_cpp && ./RobotecGPULidar_test &&
         export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp && ./RobotecGPULidar_test'
-      docker-image: ${{ PRODUCTION_DOCKER_IMAGE }}
+      docker-image: ${{ env.PRODUCTION_DOCKER_IMAGE }}
