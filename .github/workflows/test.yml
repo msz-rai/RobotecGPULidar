@@ -16,22 +16,22 @@ jobs:
   load-env:
     uses: ./.github/workflows/load-env.yml
 
-### BUILD ###
-#  build-core:
-#    needs: [checkout-repository, load-env]
-#    uses: ./.github/workflows/build-rgl.yml
-#    with:
-#      build-command: ./setup.py --build-dir build-core
-#      self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
-#      optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
-#
-#  build-pcl:
-#    needs: [checkout-repository, load-env]
-#    uses: ./.github/workflows/build-rgl.yml
-#    with:
-#      build-command: ./setup.py --with-pcl --build-dir build-pcl
-#      self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
-#      optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
+### BUILD USING RGL DOCKER ###
+  build-core:
+    needs: [checkout-repository, load-env]
+    uses: ./.github/workflows/build-rgl.yml
+    with:
+      build-command: ./setup.py --build-dir build-core
+      self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
+      optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
+
+  build-pcl:
+    needs: [checkout-repository, load-env]
+    uses: ./.github/workflows/build-rgl.yml
+    with:
+      build-command: ./setup.py --with-pcl --build-dir build-pcl
+      self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
+      optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
 
   build-ros2:
     needs: [ checkout-repository, load-env ]
@@ -41,28 +41,115 @@ jobs:
       self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
       optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
 
-#### TEST IN RGL DOCKER ###
-#  test-core-dev:
-#    needs: [build-core]
-#    uses: ./.github/workflows/test-rgl.yml
-#    with:
-#      test-command: cd build-core/test && ./RobotecGPULidar_test
-#      docker-image: localhost:5000/rgl:latest
-#
-#  test-pcl-dev:
-#    needs: [ build-pcl ]
-#    uses: ./.github/workflows/test-rgl.yml
-#    with:
-#      test-command: cd build-pcl/test && ./RobotecGPULidar_test
-#      docker-image: localhost:5000/rgl:latest
-#
-#### TEST IN CLEAN DOCKER ###
-#  test-core-prod:
-#    needs: [build-core]
-#    uses: ./.github/workflows/test-rgl.yml
-#    with:
-#      test-command: cd build-core/test && ./RobotecGPULidar_test
-#      docker-image: nvidia/cuda:11.7.1-base-ubuntu22.04
+  build-udp:
+    needs: [ checkout-repository, load-env ]
+    uses: ./.github/workflows/build-rgl.yml
+    with:
+      build-command: ./setup.py --with-udp --build-dir build-udp
+      self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
+      optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
+
+  build-snow:
+    needs: [ checkout-repository, load-env ]
+    uses: ./.github/workflows/build-rgl.yml
+    with:
+      build-command: ./setup.py --with-snow --build-dir build-snow
+      self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
+      optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
+
+  build-all:
+    needs: [ checkout-repository, load-env ]
+    uses: ./.github/workflows/build-rgl.yml
+    with:
+      build-command: source /opt/ros/humble/setup.bash && ./setup.py --with-pcl --with-ros2-standalone --with-udp --with-snow --build-dir build-all
+      self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
+      optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
+
+### TEST IN RGL DOCKER ###
+  test-core-dev:
+    needs: [build-core]
+    uses: ./.github/workflows/test-rgl.yml
+    with:
+      test-command: cd build-core/test && ./RobotecGPULidar_test
+      docker-image: localhost:5000/rgl:latest
+
+  test-pcl-dev:
+    needs: [ build-pcl ]
+    uses: ./.github/workflows/test-rgl.yml
+    with:
+      test-command: cd build-pcl/test && ./RobotecGPULidar_test
+      docker-image: localhost:5000/rgl:latest
+
+  test-ros2-dev:
+    needs: [ build-ros2 ]
+    uses: ./.github/workflows/test-rgl.yml
+    with:
+      test-command: source /opt/ros/humble/setup.bash && cd build-ros2/test && export RMW_IMPLEMENTATION=rmw_fastrtps_cpp && ./RobotecGPULidar_test && export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp && ./RobotecGPULidar_test
+      docker-image: localhost:5000/rgl:latest
+
+  test-udp-dev:
+    needs: [ build-udp ]
+    uses: ./.github/workflows/test-rgl.yml
+    with:
+      test-command: cd build-udp/test && ./RobotecGPULidar_test
+      docker-image: localhost:5000/rgl:latest
+
+  test-snow-dev:
+    needs: [ build-snow ]
+    uses: ./.github/workflows/test-rgl.yml
+    with:
+      test-command: cd build-snow/test && ./RobotecGPULidar_test
+      docker-image: localhost:5000/rgl:latest
+
+  test-all-dev:
+    needs: [ build-all ]
+    uses: ./.github/workflows/test-rgl.yml
+    with:
+      test-command: source /opt/ros/humble/setup.bash && cd build-all/test && export RMW_IMPLEMENTATION=rmw_fastrtps_cpp && ./RobotecGPULidar_test && export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp && ./RobotecGPULidar_test
+      docker-image: localhost:5000/rgl:latest
+
+### TEST IN CLEAN DOCKER ###
+  test-core-prod:
+    needs: [build-core]
+    uses: ./.github/workflows/test-rgl.yml
+    with:
+      test-command: cd build-core/test && ./RobotecGPULidar_test
+      docker-image: nvidia/cuda:11.7.1-base-ubuntu22.04
+
+  test-pcl-prod:
+    needs: [ build-pcl ]
+    uses: ./.github/workflows/test-rgl.yml
+    with:
+      test-command: cd build-pcl/test && ./RobotecGPULidar_test
+      docker-image: nvidia/cuda:11.7.1-base-ubuntu22.04
+
+  test-ros2-prod:
+    needs: [ build-ros2 ]
+    uses: ./.github/workflows/test-rgl.yml
+    with:
+      test-command: source /opt/ros/humble/setup.bash && cd build-ros2/test && cp -r ../ros2_standalone/*.so* ../ && export RMW_IMPLEMENTATION=rmw_fastrtps_cpp && ./RobotecGPULidar_test && export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp && ./RobotecGPULidar_test
+      docker-image: nvidia/cuda:11.7.1-base-ubuntu22.04
+
+  test-udp-prod:
+    needs: [ build-udp ]
+    uses: ./.github/workflows/test-rgl.yml
+    with:
+      test-command: cd build-udp/test && ./RobotecGPULidar_test
+      docker-image: nvidia/cuda:11.7.1-base-ubuntu22.04
+
+  test-snow-prod:
+    needs: [ build-snow ]
+    uses: ./.github/workflows/test-rgl.yml
+    with:
+      test-command: cd build-snow/test && ./RobotecGPULidar_test
+      docker-image: nvidia/cuda:11.7.1-base-ubuntu22.04
+
+  test-all-prod:
+    needs: [ build-all ]
+    uses: ./.github/workflows/test-rgl.yml
+    with:
+      test-command: source /opt/ros/humble/setup.bash && cd build-all/test && cp -r ../ros2_standalone/*.so* ../ && export RMW_IMPLEMENTATION=rmw_fastrtps_cpp && ./RobotecGPULidar_test && export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp && ./RobotecGPULidar_test
+      docker-image: nvidia/cuda:11.7.1-base-ubuntu22.04
 
 
 
