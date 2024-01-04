@@ -1,10 +1,9 @@
 name: test
 
-run-name: ${{ github.actor }} is a test flow
-
 on: [push]
 
 jobs:
+###### PREPARE WORKFLOW ######
   checkout-repository:
     runs-on: self-hosted
     steps:
@@ -67,7 +66,7 @@ jobs:
       self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
       optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
 
-###### TEST IN RGL DOCKER ######
+###### TEST WITH RGL DOCKER IMAGE ######
   test-core-dev:
     needs: [build-core]
     uses: ./.github/workflows/test-rgl.yml
@@ -114,11 +113,12 @@ jobs:
       test-command: '
         source /opt/ros/humble/setup.bash &&
         cd build-all/test &&
+        export RGL_TEST_VLP16_CALIB_FILE=$(pwd)/../../extensions/udp/test/resources/Ros2Vlp16Calib.yaml &&
         export RMW_IMPLEMENTATION=rmw_fastrtps_cpp && ./RobotecGPULidar_test &&
         export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp && ./RobotecGPULidar_test'
       docker-image: localhost:5000/rgl:latest
 
-###### TEST IN CLEAN DOCKER ######
+###### TEST WITH CLEAN UBUNTU DOCKER IMAGE ######
   test-core-prod:
     needs: [build-core]
     uses: ./.github/workflows/test-rgl.yml
