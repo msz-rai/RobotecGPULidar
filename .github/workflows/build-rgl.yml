@@ -22,6 +22,9 @@ permissions:
 
 jobs:
   build:
+    defaults:
+      run:
+        shell: bash
     runs-on: self-hosted
     container:
       image: docker://localhost:5000/rgl:latest
