@@ -35,7 +35,7 @@ jobs:
     needs: [ checkout-repository, load-env ]
     uses: ./.github/workflows/build-rgl.yml
     with:
-      build-command: source /opt/ros/humble/setup.bash && ./setup.py --with-ros2--standalone --build-dir build-ros2
+      build-command: source /opt/ros/humble/setup.bash && ./setup.py --with-ros2-standalone --build-dir build-ros2
       self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
       optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
 
