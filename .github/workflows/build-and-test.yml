@@ -128,12 +128,10 @@ jobs:
     uses: ./.github/workflows/test-subworkflow.yml
     with:
       # Source ROS2, standalone build is tested in prod environment
-      # Install required ROS2 packages for UDP-ROS2 integration test
       # Set `RGL_TEST_VLP16_CALIB_FILE` for UDP-ROS2 integration test
       # Run tests twice, each for different RMW implementation
       test-command: '
         source /opt/ros/humble/setup.bash &&
-        apt update && apt install -y ros-humble-velodyne-driver ros-humble-velodyne-pointcloud psmisc &&
         export RGL_TEST_VLP16_CALIB_FILE=$(pwd)/extensions/udp/test/resources/Ros2Vlp16Calib.yaml &&
         cd build-all/test &&
         export RMW_IMPLEMENTATION=rmw_fastrtps_cpp && ./RobotecGPULidar_test &&
