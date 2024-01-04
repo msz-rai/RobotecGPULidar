@@ -1,4 +1,4 @@
-name: test-rgl
+name: test-subworkflow
 
 on:
   workflow_call:

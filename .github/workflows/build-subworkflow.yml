@@ -1,4 +1,4 @@
-name: build-rgl
+name: build-subworkflow
 
 on:
   workflow_call:

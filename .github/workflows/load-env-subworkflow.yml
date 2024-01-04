@@ -1,4 +1,4 @@
-name: load-env
+name: load-env-subworkflow
 
 on:
   workflow_call:
