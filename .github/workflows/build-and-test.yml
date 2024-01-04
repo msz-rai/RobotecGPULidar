@@ -1,6 +1,6 @@
 name: build-and-test
 
-run-name: Build & test RGL on '${{ github.ref_name }}'
+run-name: Build & test RGL on '${{ github.ref }}'
 
 on: [push]
 
@@ -188,4 +188,3 @@ jobs:
         export RMW_IMPLEMENTATION=rmw_fastrtps_cpp && ./RobotecGPULidar_test &&
         export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp && ./RobotecGPULidar_test'
       docker-image: nvidia/cuda:11.7.1-base-ubuntu22.04
-
