@@ -27,6 +27,7 @@ jobs:
       volumes:
         - ${{ inputs.optix-install-dir }}:/optix
       options:
+        --rm
         --gpus all
         --user ${{ inputs.self-hosted-user-id }}
     steps:

@@ -21,6 +21,7 @@ jobs:
       env:
         NVIDIA_DRIVER_CAPABILITIES: all
       options:
+        --rm
         --gpus all
     steps:
       - name: test
