@@ -31,6 +31,15 @@ jobs:
       self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
       optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
 
+  build-ros2:
+    needs: [ checkout-repository, load-env ]
+    uses: ./.github/workflows/build-rgl.yml
+    with:
+      pre-build-command: source /opt/ros/humble/setup.bash
+      build-command: ./setup.py --with-ros2 --build-dir build-ros2
+      self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
+      optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
+
 ### TEST IN RGL DOCKER ###
   test-core:
     needs: [build-core]
