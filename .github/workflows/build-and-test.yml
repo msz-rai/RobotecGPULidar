@@ -1,6 +1,6 @@
 name: build-and-test
 
-run-name: Build & test RGL for PR '${{ github.event.pull_request.title }}'
+run-name: Build & test for PR '${{ github.event.pull_request.title }}'
 
 on: [pull_request]
 
@@ -34,7 +34,7 @@ jobs:
       build-command: ./setup.py --build-dir build-core
       self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
       optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
-      docker-image: $DEVELOPMENT_DOCKER_IMAGE
+      docker-image: ${{ env.DEVELOPMENT_DOCKER_IMAGE }}
 
   build-pcl:
     needs: [checkout-repository, load-env]
@@ -43,7 +43,7 @@ jobs:
       build-command: './setup.py --with-pcl --build-dir build-pcl'
       self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
       optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
-      docker-image: $DEVELOPMENT_DOCKER_IMAGE
+      docker-image: ${{ env.DEVELOPMENT_DOCKER_IMAGE }}
 
   build-ros2:
     needs: [ checkout-repository, load-env ]
@@ -54,7 +54,7 @@ jobs:
         ./setup.py --with-ros2-standalone --build-dir build-ros2'
       self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
       optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
-      docker-image: $DEVELOPMENT_DOCKER_IMAGE
+      docker-image: ${{ env.DEVELOPMENT_DOCKER_IMAGE }}
 
   build-udp:
     needs: [ checkout-repository, load-env ]
@@ -63,7 +63,7 @@ jobs:
       build-command: './setup.py --with-udp --build-dir build-udp'
       self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
       optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
-      docker-image: $DEVELOPMENT_DOCKER_IMAGE
+      docker-image: ${{ env.DEVELOPMENT_DOCKER_IMAGE }}
 
   build-snow:
     needs: [ checkout-repository, load-env ]
@@ -72,7 +72,7 @@ jobs:
       build-command: './setup.py --with-snow --build-dir build-snow'
       self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
       optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
-      docker-image: $DEVELOPMENT_DOCKER_IMAGE
+      docker-image: ${{ env.DEVELOPMENT_DOCKER_IMAGE }}
 
   build-all:
     needs: [ checkout-repository, load-env ]
@@ -83,7 +83,7 @@ jobs:
         ./setup.py --with-pcl --with-ros2-standalone --with-udp --with-snow --build-dir build-all'
       self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
       optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
-      docker-image: $DEVELOPMENT_DOCKER_IMAGE
+      docker-image: ${{ env.DEVELOPMENT_DOCKER_IMAGE }}
 
 ###### TEST WITH RGL DOCKER IMAGE ######
   test-core-dev:
@@ -91,14 +91,14 @@ jobs:
     uses: ./.github/workflows/test-subworkflow.yml
     with:
       test-command: 'cd build-core/test && ./RobotecGPULidar_test'
-      docker-image: $DEVELOPMENT_DOCKER_IMAGE
+      docker-image: ${{ env.DEVELOPMENT_DOCKER_IMAGE }}
 
   test-pcl-dev:
     needs: [ build-pcl ]
     uses: ./.github/workflows/test-subworkflow.yml
     with:
       test-command: 'cd build-pcl/test && ./RobotecGPULidar_test'
-      docker-image: $DEVELOPMENT_DOCKER_IMAGE
+      docker-image: ${{ env.DEVELOPMENT_DOCKER_IMAGE }}
 
   test-ros2-dev:
     needs: [ build-ros2 ]
@@ -111,21 +111,21 @@ jobs:
         cd build-ros2/test &&
         export RMW_IMPLEMENTATION=rmw_fastrtps_cpp && ./RobotecGPULidar_test &&
         export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp && ./RobotecGPULidar_test'
-      docker-image: $DEVELOPMENT_DOCKER_IMAGE
+      docker-image: ${{ env.DEVELOPMENT_DOCKER_IMAGE }}
 
   test-udp-dev:
     needs: [ build-udp ]
     uses: ./.github/workflows/test-subworkflow.yml
     with:
       test-command: 'cd build-udp/test && ./RobotecGPULidar_test'
-      docker-image: $DEVELOPMENT_DOCKER_IMAGE
+      docker-image: ${{ env.DEVELOPMENT_DOCKER_IMAGE }}
 
   test-snow-dev:
     needs: [ build-snow ]
     uses: ./.github/workflows/test-subworkflow.yml
     with:
       test-command: 'cd build-snow/test && ./RobotecGPULidar_test'
-      docker-image: $DEVELOPMENT_DOCKER_IMAGE
+      docker-image: ${{ env.DEVELOPMENT_DOCKER_IMAGE }}
 
   test-all-dev:
     needs: [ build-all ]
@@ -142,7 +142,7 @@ jobs:
         cd build-all/test &&
         export RMW_IMPLEMENTATION=rmw_fastrtps_cpp && ./RobotecGPULidar_test &&
         export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp && ./RobotecGPULidar_test'
-      docker-image: $DEVELOPMENT_DOCKER_IMAGE
+      docker-image: ${{ env.DEVELOPMENT_DOCKER_IMAGE }}
 
 ###### TEST WITH CLEAN UBUNTU DOCKER IMAGE ######
   test-core-prod:
@@ -150,7 +150,7 @@ jobs:
     uses: ./.github/workflows/test-subworkflow.yml
     with:
       test-command: 'cd build-core/test && ./RobotecGPULidar_test'
-      docker-image: $PRODUCTION_DOCKER_IMAGE
+      docker-image: ${{ PRODUCTION_DOCKER_IMAGE }}
 
   test-pcl-prod:
     needs: [ build-pcl ]
@@ -160,7 +160,7 @@ jobs:
       test-command: '
         apt update && apt install -y libxcursor1 libgl1 &&
         cd build-pcl/test && ./RobotecGPULidar_test'
-      docker-image: $PRODUCTION_DOCKER_IMAGE
+      docker-image: ${{ PRODUCTION_DOCKER_IMAGE }}
 
   test-ros2-prod:
     needs: [ build-ros2 ]
@@ -173,21 +173,21 @@ jobs:
         cp -r ../ros2_standalone/*.so* ../ &&
         export RMW_IMPLEMENTATION=rmw_fastrtps_cpp && ./RobotecGPULidar_test &&
         export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp && ./RobotecGPULidar_test'
-      docker-image: $PRODUCTION_DOCKER_IMAGE
+      docker-image: ${{ PRODUCTION_DOCKER_IMAGE }}
 
   test-udp-prod:
     needs: [ build-udp ]
     uses: ./.github/workflows/test-subworkflow.yml
     with:
       test-command: 'cd build-udp/test && ./RobotecGPULidar_test'
-      docker-image: $PRODUCTION_DOCKER_IMAGE
+      docker-image: ${{ PRODUCTION_DOCKER_IMAGE }}
 
   test-snow-prod:
     needs: [ build-snow ]
     uses: ./.github/workflows/test-subworkflow.yml
     with:
       test-command: 'cd build-snow/test && ./RobotecGPULidar_test'
-      docker-image: $PRODUCTION_DOCKER_IMAGE
+      docker-image: ${{ PRODUCTION_DOCKER_IMAGE }}
 
   test-all-prod:
     needs: [ build-all ]
@@ -202,4 +202,4 @@ jobs:
         cp -r ../ros2_standalone/*.so* ../ &&
         export RMW_IMPLEMENTATION=rmw_fastrtps_cpp && ./RobotecGPULidar_test &&
         export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp && ./RobotecGPULidar_test'
-      docker-image: $PRODUCTION_DOCKER_IMAGE
+      docker-image: ${{ PRODUCTION_DOCKER_IMAGE }}
