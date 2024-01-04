@@ -3,10 +3,6 @@ name: build-rgl
 on:
   workflow_call:
     inputs:
-      pre-build-command:
-        default: ""
-        required: false
-        type: string
       build-command:
         required: true
         type: string
@@ -40,7 +36,5 @@ jobs:
     steps:
       - name: fix git
         run: git config --global --add safe.directory $PWD
-      - name: pre-build
-        run: ${{ inputs.pre-build-command }}
       - name: build
         run: ${{ inputs.build-command }}
