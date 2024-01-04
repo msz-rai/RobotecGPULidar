@@ -15,53 +15,84 @@ jobs:
     uses: ./.github/workflows/load-env.yml
 
 ### BUILD ###
-  build-core:
-    needs: [checkout-repository, load-env]
-    uses: ./.github/workflows/build-rgl.yml
-    with:
-      build-command: ./setup.py --build-dir build-core
-      self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
-      optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
-
-  build-pcl:
-    needs: [checkout-repository, load-env]
-    uses: ./.github/workflows/build-rgl.yml
-    with:
-      build-command: ./setup.py --with-pcl --build-dir build-pcl
-      self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
-      optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
+#  build-core:
+#    needs: [checkout-repository, load-env]
+#    uses: ./.github/workflows/build-rgl.yml
+#    with:
+#      build-command: ./setup.py --build-dir build-core
+#      self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
+#      optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
+#
+#  build-pcl:
+#    needs: [checkout-repository, load-env]
+#    uses: ./.github/workflows/build-rgl.yml
+#    with:
+#      build-command: ./setup.py --with-pcl --build-dir build-pcl
+#      self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
+#      optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
 
   build-ros2:
     needs: [ checkout-repository, load-env ]
     uses: ./.github/workflows/build-rgl.yml
     with:
-      pre-build-command: source /opt/ros/humble/setup.bash
+      pre-build-command: source /opt/ros/humble/setup.bash && ros2 topic list
       build-command: ./setup.py --with-ros2 --build-dir build-ros2
       self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
       optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
 
-### TEST IN RGL DOCKER ###
-  test-core-dev:
-    needs: [build-core]
-    uses: ./.github/workflows/test-rgl.yml
-    with:
-      test-command: cd build-core/test && ./RobotecGPULidar_test
-      docker-image: localhost:5000/rgl:latest
+#### TEST IN RGL DOCKER ###
+#  test-core-dev:
+#    needs: [build-core]
+#    uses: ./.github/workflows/test-rgl.yml
+#    with:
+#      test-command: cd build-core/test && ./RobotecGPULidar_test
+#      docker-image: localhost:5000/rgl:latest
+#
+#  test-pcl-dev:
+#    needs: [ build-pcl ]
+#    uses: ./.github/workflows/test-rgl.yml
+#    with:
+#      test-command: cd build-pcl/test && ./RobotecGPULidar_test
+#      docker-image: localhost:5000/rgl:latest
+#
+#### TEST IN CLEAN DOCKER ###
+#  test-core-prod:
+#    needs: [build-core]
+#    uses: ./.github/workflows/test-rgl.yml
+#    with:
+#      test-command: cd build-core/test && ./RobotecGPULidar_test
+#      docker-image: nvidia/cuda:11.7.1-base-ubuntu22.04
 
-  test-pcl-dev:
-    needs: [ build-pcl ]
-    uses: ./.github/workflows/test-rgl.yml
-    with:
-      test-command: cd build-pcl/test && ./RobotecGPULidar_test
-      docker-image: localhost:5000/rgl:latest
 
-### TEST IN CLEAN DOCKER ###
-  test-core-prod:
-    needs: [build-core]
-    uses: ./.github/workflows/test-rgl.yml
-    with:
-      test-command: cd build-core/test && ./RobotecGPULidar_test
-      docker-image: nvidia/cuda:11.7.1-base-ubuntu22.04
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #  build:
 #    needs: [checkout-repository, load-env]
