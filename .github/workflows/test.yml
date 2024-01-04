@@ -35,20 +35,20 @@ jobs:
     needs: [ checkout-repository, load-env ]
     uses: ./.github/workflows/build-rgl.yml
     with:
-      pre-build-command: source /opt/ros/humble/setup.bash
+      pre-build-command: . /opt/ros/humble/setup.bash
       build-command: ./setup.py --with-ros2 --build-dir build-ros2
       self-hosted-user-id: ${{ needs.load-env.outputs.user-id }}
       optix-install-dir: ${{ needs.load-env.outputs.optix-install-dir }}
 
 ### TEST IN RGL DOCKER ###
-  test-core:
+  test-core-dev:
     needs: [build-core]
     uses: ./.github/workflows/test-rgl.yml
     with:
       test-command: cd build-core/test && ./RobotecGPULidar_test
       docker-image: localhost:5000/rgl:latest
 
-  test-pcl:
+  test-pcl-dev:
     needs: [ build-pcl ]
     uses: ./.github/workflows/test-rgl.yml
     with:
@@ -56,7 +56,7 @@ jobs:
       docker-image: localhost:5000/rgl:latest
 
 ### TEST IN CLEAN DOCKER ###
-  test-on-clean-machine-core:
+  test-core-prod:
     needs: [build-core]
     uses: ./.github/workflows/test-rgl.yml
     with:
