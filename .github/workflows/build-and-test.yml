@@ -1,6 +1,6 @@
 name: build-and-test
 
-run-name: Build & test RGL on PR '${{ github.event.pull_request.title }}'
+run-name: Build & test RGL for PR '${{ github.event.pull_request.title }}'
 
 on: [pull_request]
 
